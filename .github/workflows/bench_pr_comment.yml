@@ -45,15 +45,15 @@ jobs:
               - 'src/spartan/**'
             supernova:
               - 'src/supernova/**'
-      - if steps.changes.outputs.spartan == 'true'
-        uses: boa-dev/criterion-compare-action@v3
+      - uses: boa-dev/criterion-compare-action@v3
+        if: steps.changes.outputs.spartan == 'true'
         with:
           # Optional. Compare only this benchmark target
           benchName: "compressed-snark"
           # Needed. The name of the branch to compare with
           branchName: ${{ github.ref_name }}
-      - if steps.changes.outputs.supernova == 'true'
-        uses: boa-dev/criterion-compare-action@v3
+      - uses: boa-dev/criterion-compare-action@v3
+        if: steps.changes.outputs.supernova == 'true'
         with:
           # Optional. Compare only this benchmark target
           benchName: "recursive-snark-supernova"
