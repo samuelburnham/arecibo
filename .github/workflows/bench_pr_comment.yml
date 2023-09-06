@@ -1,5 +1,5 @@
 # Creates a PR benchmark comment with a comparison to main
-name: Benchmark pull requests
+name: Benchmark pull requests - temporary test version
 on:
   issue_comment:
     types: [created]
@@ -22,8 +22,10 @@ jobs:
         if: success()
         with:
           ref: ${{ steps.comment-branch.outputs.head_ref }}
-      - run: echo "PR branch: ${{ steps.comment-branch.outputs.head_ref }}"
-      - run: echo "Base branch: ${{ github.ref_name }}"
+      - name: Get PR branch name
+        run: echo "PR branch: ${{ steps.comment-branch.outputs.head_ref }}"
+      - name: Get base branch name
+        run: echo "Base branch: ${{ github.ref_name }}"
   runBenchmark:
     name: run benchmark
     runs-on: [self-hosted, bench]
