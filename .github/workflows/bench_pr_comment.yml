@@ -12,6 +12,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  runDiagnostics:
+    name: run diagnostics
+    runs-on: ubuntu-latest
+    steps:
+      - uses: xt0rted/pull-request-comment-branch@v2
+        id: comment-branch
+      - uses: actions/checkout@v4
+        if: success()
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+      - run: echo "PR branch: ${{ steps.comment-branch.outputs.head_ref }}"
+      - run: echo "Base branch: ${{ github.ref_name }}"
   runBenchmark:
     name: run benchmark
     runs-on: [self-hosted, bench]
