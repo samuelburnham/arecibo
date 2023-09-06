@@ -1,5 +1,5 @@
 # Creates a PR benchmark comment with a comparison to main
-name: Benchmark pull requests
+name: Benchmark pull requests - temporary test version
 on:
   issue_comment:
     types: [created]
