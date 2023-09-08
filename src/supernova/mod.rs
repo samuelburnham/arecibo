@@ -1,3 +1,4 @@
+// [TEMPORARY] Check that modified supernova code triggers benchmark
 //! This library implements SuperNova, a Non-Uniform IVC based on Nova.
 
 use std::marker::PhantomData;
