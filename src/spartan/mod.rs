@@ -1,3 +1,4 @@
+// [TEMPORARY] Check that modified spartan code triggers benchmark
 //! This module implements `RelaxedR1CSSNARKTrait` using Spartan that is generic
 //! over the polynomial commitment and evaluation argument (i.e., a PCS)
 //! We provide two implementations, one in snark.rs (which does not use any preprocessing)
