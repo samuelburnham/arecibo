@@ -727,6 +727,7 @@ where
   }
 
   /// Create a new `CompressedSNARK`
+  #[tracing::instrument(skip_all, name = "CompressedSNARK::prove")]
   pub fn prove(
     pp: &PublicParams<G1, G2, C1, C2>,
     pk: &ProverKey<G1, G2, C1, C2, S1, S2>,
