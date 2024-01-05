@@ -11,6 +11,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  NVIDIA_VISIBLE_DEVICES: all
+  NVIDIA_DRIVER_CAPABILITITES: compute,utility
+
 jobs:
   cuda:
     name: Rust tests on CUDA
