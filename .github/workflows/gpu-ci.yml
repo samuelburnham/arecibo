@@ -29,6 +29,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@nextest
       - uses: Swatinem/rust-cache@v2
+      - run: ld --version
+      - run: cc --version
+      - run: echo $LD_LIBRARY_PATH
       - name: CUDA tests
         run: |
           cargo nextest run --profile ci --cargo-profile dev-ci --features cuda
@@ -50,6 +53,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@nextest
       - uses: Swatinem/rust-cache@v2
+      - run: ld --version
+      - run: cc --version
+      - run: echo $LD_LIBRARY_PATH
       - name: OpenCL tests
         run: |
           cargo nextest run --profile ci --cargo-profile dev-ci --features cuda,opencl
