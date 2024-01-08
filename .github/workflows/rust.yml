@@ -45,28 +45,35 @@ jobs:
 
   check-lurk-compiles:
     if: github.event_name == 'pull_request'
-    runs-on: buildjet-8vcpu-ubuntu-2204
-    env:
-      RUSTFLAGS: -D warnings
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        path: ${{ github.workspace }}/arecibo
-    - uses: actions/checkout@v4
-      with:
-        repository: lurk-lab/lurk-rs
-        path: ${{ github.workspace }}/lurk
-        submodules: recursive
-    - uses: dtolnay/rust-toolchain@stable
-    - uses: Swatinem/rust-cache@v2
-    - name: Patch Cargo.toml
-      working-directory: ${{ github.workspace }}/lurk
-      run: |
-        echo "[patch.'https://github.com/lurk-lab/arecibo']" >> Cargo.toml
-        echo "nova = { path='../arecibo', package='arecibo' }" >> Cargo.toml
-    - name: Check Lurk-rs types don't break spectacularly
-      working-directory: ${{ github.workspace }}/lurk
-      run: cargo check --all --tests --benches --examples
+      - uses: actions/checkout@v4
+        with:
+          repository: lurk-lab/ci-workflows
+      - uses: ./.github/actions/ci-env
+      - uses: actions/checkout@v4
+      - run: echo ${{ github.workspace }}
+      - uses: actions/checkout@v4
+        with:
+          repository: lurk-lab/lurk-rs
+          path: ./lurk-rs
+          submodules: recursive
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Patch Cargo.toml
+        working-directory: ${{ github.workspace }}/lurk-rs
+        run: |
+          REPOSITORY_NAME=$(echo ${{ github.repository }} | awk -F'/' '{ print $2 }')
+          # the dependency we want to patch is usually the same as the package, but
+          # we e.g. want to override dependency 'nova' with an 'arecibo' package
+          #DEPENDENCY=${{ inputs.dependency_name || inputs.package_name }}
+          DEPENDENCY=nova
+          PACKAGE=arecibo
+          echo "[patch.'https://github.com/${{ github.repository }}']" >> Cargo.toml
+          echo "$DEPENDENCY = { path='../', package='arecibo' }" >> Cargo.toml
+      - name: Check Lurk-rs types don't break spectacularly
+        working-directory: ${{ github.workspace }}/lurk-rs
+        run: cargo check --workspace --tests --benches --examples
 
   # Wasm build, rustfmt, clippy, doctests, and MSRV
   code-quality:
