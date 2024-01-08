@@ -52,7 +52,6 @@ jobs:
           repository: lurk-lab/ci-workflows
       - uses: ./.github/actions/ci-env
       - uses: actions/checkout@v4
-      - run: echo ${{ github.workspace }}
       - uses: actions/checkout@v4
         with:
           repository: lurk-lab/lurk-rs
@@ -63,14 +62,19 @@ jobs:
       - name: Patch Cargo.toml
         working-directory: ${{ github.workspace }}/lurk-rs
         run: |
-          REPOSITORY_NAME=$(echo ${{ github.repository }} | awk -F'/' '{ print $2 }')
+          URL=https://github.com/lurk-lab/arecibo
           # the dependency we want to patch is usually the same as the package, but
           # we e.g. want to override dependency 'nova' with an 'arecibo' package
-          #DEPENDENCY=${{ inputs.dependency_name || inputs.package_name }}
-          DEPENDENCY=nova
-          PACKAGE=arecibo
-          echo "[patch.'https://github.com/${{ github.repository }}']" >> Cargo.toml
-          echo "$DEPENDENCY = { path='../', package='arecibo' }" >> Cargo.toml
+          DEPENDENCY=$(grep "git = \"$URL\"" Cargo.toml | awk '{ print $1 }')
+          PACKAGE=$(grep "git = \"$URL\"" Cargo.toml | grep -oP 'package = "\K[^"]*'| cat)
+          echo "[patch.'$URL']" >> Cargo.toml                                       
+          if [ ! -z "$PACKAGE" ];                  
+          then
+            echo "$DEPENDENCY = { path='../', package='$PACKAGE' }" >> Cargo.toml
+          else
+            echo "$DEPENDENCY = { path='../' }" >> Cargo.toml                  
+          fi
+      - run: cat Cargo.toml | tail -3
       - name: Check Lurk-rs types don't break spectacularly
         working-directory: ${{ github.workspace }}/lurk-rs
         run: cargo check --workspace --tests --benches --examples
